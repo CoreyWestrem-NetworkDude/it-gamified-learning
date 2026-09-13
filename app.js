@@ -146,6 +146,16 @@ function triggerLevelSuccess(game) {
 
     setTimeout(() => {
         DOM.celebrationScreen.classList.add("hidden");
+        
+        // 🧼 WIPE WINDOW CLEAN: Erase terminal scroll history right before loading the next level ticket
+        if (game.id === "command-prompt") {
+            DOM.cliOutput.innerHTML = `
+                <p>Microsoft Windows [Version 10.0.22631.3527]</p>
+                <p>(c) Microsoft Corporation. All rights reserved.</p>
+                <br>
+            `;
+        }
+
         AppState.currentLevelIndex++;
         saveProgressToCache();
 
@@ -221,7 +231,8 @@ DOM.cliInput.addEventListener("keydown", (e) => {
                 faultLine.style.color = "#e74c3c";
                 faultLine.textContent = `'${inputCmd}' is an unhandled instruction parameter. Ticket criteria validation failed.`;
                 DOM.cliOutput.appendChild(faultLine);
-            handleActionFailure();
+                handleActionFailure();
+            }
             DOM.cliOutput.scrollTop = DOM.cliOutput.scrollHeight;
         }
     }
