@@ -62,7 +62,7 @@ function loadAdLevel() {
 function loadCliLevel() {
     const levelData = commandPromptGame.levels[AppState.currentLevelIndex];
     updateTelemetry(`CLI: Level ${levelData.level}`);
-    DOM.cliTicketDesc.innerHTML = `<strong>Active Ticket:</strong> ${levelData.taskDescription}`;
+    DOM.cliTicketDesc.innerHTML = `<strong>Active Ticket:</strong> [Level ${levelData.level}/150] ${levelData.taskDescription}`;
 }
 
 // Telemetry and Hint Handler Mechanics
@@ -75,7 +75,6 @@ function handleActionFailure() {
     DOM.strikeBadge.className = "strike-alert";
 
     if (AppState.strikeCount >= AppState.maxStrikes) {
-        // Display context hint from the level array index constraints safely
         const hintIndex = Math.min(AppState.strikeCount - 3, currentLevel.hintChain.length - 1);
         DOM.hintText.textContent = currentLevel.hintChain[hintIndex];
         DOM.hintOverlay.classList.remove("hidden");
@@ -88,6 +87,7 @@ function hideHint() {
     DOM.strikeBadge.className = "strike-clear";
 }
 
+// Update telemetry display bar metrics
 function updateTelemetry(text) {
     DOM.streakMeter.textContent = `🎯 ${text}`;
 }
@@ -96,6 +96,22 @@ function updateTelemetry(text) {
 function triggerLevelSuccess(game) {
     hideHint();
     AppState.strikeCount = 0;
+    
+    const completedLevelNum = game.levels[AppState.currentLevelIndex].level;
+    let promoText = "🎉 SUCCESS! LEVEL ACHIEVED 🎉";
+
+    // Re-mapped structural intercepts to scale beautifully across all 150 tasks
+    if (game.id === "command-prompt") {
+        if (completedLevelNum === 50) {
+            promoText = `👨‍💻 PROMOTED: Tier 2 Desktop Infrastructure Specialist!<br><span style="font-size:16px; font-weight:normal;">+25% Virtual Salary Bump | Active Domain Tooling Clearances Granted</span>`;
+        } else if (completedLevelNum === 100) {
+            promoText = `🛡️ PROMOTED: Tier 3 Enterprise Systems Architect!<br><span style="font-size:16px; font-weight:normal;">Root Domain Write Permissions Enabled | Core Server Failover Control Keys Handed Over</span>`;
+        } else if (completedLevelNum === 150) {
+            promoText = `👑 ENTERPRISE MASTERED: Chief Technology Officer (CTO)!<br><span style="font-size:16px; font-weight:normal;">Full Simulation Syllabus Complete. Total Architecture Dominance Achieved.</span>`;
+        }
+    }
+
+    DOM.celebrationScreen.innerHTML = promoText;
     DOM.celebrationScreen.classList.remove("hidden");
 
     setTimeout(() => {
@@ -106,10 +122,14 @@ function triggerLevelSuccess(game) {
             if (AppState.currentGameModule === "active-directory") loadAdLevel();
             else loadCliLevel();
         } else {
-            DOM.adWizardView.innerHTML = `<h3>🎉 Simulation Complete!</h3><p>You have mastered this technical deployment track.</p>`;
+            if (AppState.currentGameModule === "command-prompt") {
+                DOM.cliOutput.innerHTML += `<p style="color:#2ecc71; font-weight:bold;">\n[COMPLETED]: Configuration space validation cleared. Total IT Mastery achieved!</p>`;
+            } else {
+                DOM.adWizardView.innerHTML = `<h3>🎉 Simulation Complete!</h3><p>You have mastered this technical deployment track.</p>`;
+            }
             updateTelemetry("Track Complete!");
         }
-    }, 1800);
+    }, completedLevelNum === 50 || completedLevelNum === 100 || completedLevelNum === 150 ? 4500 : 1500);
 }
 
 // Input Listener Event Bindings Setup Layout
@@ -131,7 +151,6 @@ DOM.aducTrigger.addEventListener("click", () => {
     DOM.smToolsDropdown.classList.add("hidden");
     if (AppState.currentGameModule === "active-directory") {
         if (activeDirectoryGame.levels[AppState.currentLevelIndex].validateAction("click", "aduc-trigger")) {
-            // Transform interface workspace view area to mimic authentic opened ADUC panel
             DOM.adWizardView.innerHTML = `
                 <div style="background: white; border: 1px solid #ccc; padding: 10px; height: 80%;">
                     <strong>Active Directory Users and Computers</strong>
@@ -154,7 +173,6 @@ DOM.cliInput.addEventListener("keydown", (e) => {
         const inputCmd = DOM.cliInput.value;
         DOM.cliInput.value = "";
 
-        // Render mock system terminal echo returns lines onto desktop panel wrapper
         const lineEcho = document.createElement("p");
         lineEcho.textContent = `C:\\Users\\Administrator>${inputCmd}`;
         DOM.cliOutput.appendChild(lineEcho);
@@ -164,16 +182,17 @@ DOM.cliInput.addEventListener("keydown", (e) => {
             if (levelData.validateAction("command", inputCmd)) {
                 const responseLine = document.createElement("p");
                 responseLine.style.color = "#2ecc71";
-                responseLine.textContent = "\nEthernet adapter vEthernet (External):\n   Connection-specific DNS Suffix . : corp.local\n   IPv4 Address. . . . . . . . . . . : 10.0.0.15\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 10.0.0.1\n";
+                responseLine.textContent = `[OK]: Command authorized. Configuration snapshot validation loop passed.`;
                 DOM.cliOutput.appendChild(responseLine);
                 triggerLevelSuccess(commandPromptGame);
             } else {
                 const faultLine = document.createElement("p");
                 faultLine.style.color = "#e74c3c";
-                faultLine.textContent = `'${inputCmd}' is recognized as a functional operational parameter but fails the specific ticket troubleshooting requirements loop profile tracking constraints.`;
+                faultLine.textContent = `'${inputCmd}' is an unhandled instruction parameter. Ticket criteria validation failed.`;
                 DOM.cliOutput.appendChild(faultLine);
                 handleActionFailure();
             }
+            DOM.cliOutput.scrollTop = DOM.cliOutput.scrollHeight;
         }
     }
 });
