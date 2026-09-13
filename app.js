@@ -1,4 +1,4 @@
-// Master State Engine Configuration Object
+// Master State Engine Configuration Object with Local Cache Checks
 const AppState = {
     currentGameModule: "active-directory",
     currentLevelIndex: 0,
@@ -26,12 +26,38 @@ const DOM = {
     celebrationScreen: document.getElementById("celebration-screen")
 };
 
+// 💾 LOCAL CACHE SYSTEM MECHANICS (Save and Load Functions)
+function saveProgressToCache() {
+    const cachePayload = {
+        module: AppState.currentGameModule,
+        levelIndex: AppState.currentLevelIndex
+    };
+    localStorage.setItem("it_simulator_progress", JSON.stringify(cachePayload));
+}
+
+function loadProgressFromCache() {
+    const cachedData = localStorage.getItem("it_simulator_progress");
+    if (cachedData) {
+        try {
+            const parsed = JSON.parse(cachedData);
+            AppState.currentGameModule = parsed.module || "active-directory";
+            AppState.currentLevelIndex = parsed.levelIndex || 0;
+            console.log(`[STATE LOADED]: Restored save state at ${AppState.currentGameModule} - Index ${AppState.currentLevelIndex}`);
+        } catch (e) {
+            console.error("Failed to recover historical telemetry profile state logs.", e);
+        }
+    }
+}
+
 // Module Route Loader Navigation Rules
-function switchWorkspaceView(targetModule) {
+function switchWorkspaceView(targetModule, initializationMode = false) {
     AppState.currentGameModule = targetModule;
-    AppState.currentLevelIndex = 0;
+    if (!initializationMode) {
+        AppState.currentLevelIndex = 0;
+    }
     AppState.strikeCount = 0;
     hideHint();
+    saveProgressToCache();
 
     if (targetModule === "active-directory") {
         DOM.btnLoadAd.classList.add("active");
@@ -50,6 +76,9 @@ function switchWorkspaceView(targetModule) {
 
 // Active Directory Game Subsystem Router Loop
 function loadAdLevel() {
+    if (AppState.currentLevelIndex >= activeDirectoryGame.levels.length) {
+        AppState.currentLevelIndex = activeDirectoryGame.levels.length - 1;
+    }
     const levelData = activeDirectoryGame.levels[AppState.currentLevelIndex];
     updateTelemetry(`AD: Level ${levelData.level}`);
     DOM.adWizardView.innerHTML = `
@@ -60,6 +89,9 @@ function loadAdLevel() {
 
 // Command Prompt Game Subsystem Router Loop
 function loadCliLevel() {
+    if (AppState.currentLevelIndex >= commandPromptGame.levels.length) {
+        AppState.currentLevelIndex = commandPromptGame.levels.length - 1;
+    }
     const levelData = commandPromptGame.levels[AppState.currentLevelIndex];
     updateTelemetry(`CLI: Level ${levelData.level}`);
     DOM.cliTicketDesc.innerHTML = `<strong>Active Ticket:</strong> [Level ${levelData.level}/150] ${levelData.taskDescription}`;
@@ -87,7 +119,6 @@ function hideHint() {
     DOM.strikeBadge.className = "strike-clear";
 }
 
-// Update telemetry display bar metrics
 function updateTelemetry(text) {
     DOM.streakMeter.textContent = `🎯 ${text}`;
 }
@@ -100,7 +131,6 @@ function triggerLevelSuccess(game) {
     const completedLevelNum = game.levels[AppState.currentLevelIndex].level;
     let promoText = "🎉 SUCCESS! LEVEL ACHIEVED 🎉";
 
-    // Re-mapped structural intercepts to scale beautifully across all 150 tasks
     if (game.id === "command-prompt") {
         if (completedLevelNum === 50) {
             promoText = `👨‍💻 PROMOTED: Tier 2 Desktop Infrastructure Specialist!<br><span style="font-size:16px; font-weight:normal;">+25% Virtual Salary Bump | Active Domain Tooling Clearances Granted</span>`;
@@ -117,6 +147,7 @@ function triggerLevelSuccess(game) {
     setTimeout(() => {
         DOM.celebrationScreen.classList.add("hidden");
         AppState.currentLevelIndex++;
+        saveProgressToCache();
 
         if (AppState.currentLevelIndex < game.levels.length) {
             if (AppState.currentGameModule === "active-directory") loadAdLevel();
@@ -190,12 +221,12 @@ DOM.cliInput.addEventListener("keydown", (e) => {
                 faultLine.style.color = "#e74c3c";
                 faultLine.textContent = `'${inputCmd}' is an unhandled instruction parameter. Ticket criteria validation failed.`;
                 DOM.cliOutput.appendChild(faultLine);
-                handleActionFailure();
-            }
+            handleActionFailure();
             DOM.cliOutput.scrollTop = DOM.cliOutput.scrollHeight;
         }
     }
 });
 
-// Initialize Framework Ingress Pipeline Routing Environment Setup
-switchWorkspaceView("active-directory");
+// Initialize and Boot the Engine
+loadProgressFromCache();
+switchWorkspaceView(AppState.currentGameModule, true);
