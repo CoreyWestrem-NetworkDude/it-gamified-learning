@@ -81,8 +81,8 @@ function loadAdLevel() {
     const levelData = activeDirectoryGame.levels[AppState.currentLevelIndex];
     updateTelemetry(`AD: Level ${levelData.level}`);
     DOM.adWizardView.innerHTML = `
-        <h3>Dashboard Tasks</h3>
-        <p class="placeholder-text"><strong>Objective:</strong> ${levelData.taskDescription}</p>
+    <h3>Dashboard Tasks</h3>
+    <p class="placeholder-text"><strong>Objective:</strong> ${levelData.taskDescription}</p>
     `;
 }
 
@@ -110,6 +110,7 @@ function handleActionFailure() {
     }
 }
 
+// Clear visual alerts
 function hideHint() {
     DOM.hintOverlay.classList.add("hidden");
     DOM.strikeBadge.textContent = `Strikes: 0/${AppState.maxStrikes}`;
@@ -123,7 +124,7 @@ function updateTelemetry(text) {
 function triggerLevelSuccess(game) {
     hideHint();
     AppState.strikeCount = 0;
-    
+
     const completedLevelNum = game.levels[AppState.currentLevelIndex].level;
     let promoText = "🎉 SUCCESS! LEVEL ACHIEVED 🎉";
 
@@ -142,12 +143,13 @@ function triggerLevelSuccess(game) {
 
     setTimeout(() => {
         DOM.celebrationScreen.classList.add("hidden");
-        
+
+        // 🧼 Auto-clear terminal logs on level transition
         if (game.id === "command-prompt") {
             DOM.cliOutput.innerHTML = `
-                <p>Microsoft Windows [Version 10.0.22631.3527]</p>
-                <p>(c) Microsoft Corporation. All rights reserved.</p>
-                <br>
+            <p>Microsoft Windows [Version 10.0.22631.3527]</p>
+            <p>(c) Microsoft Corporation. All rights reserved.</p>
+            <br>
             `;
         }
 
@@ -188,14 +190,14 @@ DOM.aducTrigger.addEventListener("click", () => {
     if (AppState.currentGameModule === "active-directory") {
         if (activeDirectoryGame.levels[AppState.currentLevelIndex].validateAction("click", "aduc-trigger")) {
             DOM.adWizardView.innerHTML = `
-                <div style="background: white; border: 1px solid #ccc; padding: 10px; height: 80%;">
-                    <strong>Active Directory Users and Computers</strong>
-                    <hr>
-                    <div style="display:flex; gap:20px; margin-top:10px;">
-                        <div style="border-right:1px solid #eee; width:30%;">📁 corp.local</div>
-                        <div>👉 [Domain Controllers]<br>👉 [Users]</div>
-                    </div>
-                </div>
+            <div style="background: white; border: 1px solid #ccc; padding: 10px; height: 80%;">
+            <strong>Active Directory Users and Computers</strong>
+            <hr>
+            <div style="display:flex; gap:20px; margin-top:10px;">
+            <div style="border-right:1px solid #eee; width:30%;">📁 corp.local</div>
+            <div>👉 [Domain Controllers]<br>👉 [Users]</div>
+            </div>
+            </div>
             `;
             triggerLevelSuccess(activeDirectoryGame);
         } else {
@@ -226,7 +228,8 @@ DOM.cliInput.addEventListener("keydown", (e) => {
                 faultLine.style.color = "#e74c3c";
                 faultLine.textContent = `'${inputCmd}' is an unhandled instruction parameter. Ticket criteria validation failed.`;
                 DOM.cliOutput.appendChild(faultLine);
-            handleActionFailure();
+                handleActionFailure();
+            }
             DOM.cliOutput.scrollTop = DOM.cliOutput.scrollHeight;
         }
     }
