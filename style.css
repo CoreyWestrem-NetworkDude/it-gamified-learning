@@ -53,6 +53,7 @@ body, html {
     padding: 20px;
     height: calc(100vh - 45px);
     position: relative;
+    box-sizing: border-box;
 }
 
 .simulator-window {
@@ -63,6 +64,7 @@ body, html {
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .hidden { display: none !important; }
@@ -94,7 +96,7 @@ body, html {
 
 .alert-banner { background-color: #fff2cc; border-left: 4px solid #f1c40f; padding: 15px; margin-bottom: 20px; color: #333; }
 
-/* Command Prompt CLI Terminal Configuration */
+/* 🖥️ UPGRADED COMMAND PROMPT CORE GRID LAYOUT */
 .cli-wrapper {
     background-color: var(--cli-black);
     color: #cccccc;
@@ -102,9 +104,50 @@ body, html {
     padding: 15px;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
-.cli-input-line { display: flex; align-items: center; margin-top: 10px; }
+/* Scrollable log panel that leaves old commands accessible via scroll wheel */
+.cli-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding-right: 5px;
+}
+
+.cli-body p {
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+/* Fixed status card containing the question - stays static right above input */
+.cli-ticket-zone {
+    background-color: #1a1a1a;
+    border-left: 4px solid var(--sm-blue);
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+}
+
+#cli-ticket-desc {
+    color: #00ff66;
+    margin: 0;
+    font-size: 14px;
+}
+
+.cli-input-line { 
+    display: flex; 
+    align-items: center; 
+    border-top: 1px solid #222;
+    padding-top: 10px;
+}
+
+.cli-input-line span {
+    color: #ffffff;
+    white-space: nowrap;
+}
+
 .cli-input-line input {
     background: none;
     border: none;
@@ -127,6 +170,7 @@ body, html {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     max-width: 350px;
     border-radius: 4px;
+    z-index: 200;
 }
 
 .hint-header { font-weight: bold; margin-bottom: 5px; color: #333; }
@@ -144,4 +188,6 @@ body, html {
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     animation: pop 0.3s ease-out;
+    z-index: 300;
+    text-align: center;
 }
