@@ -110,7 +110,6 @@ function handleActionFailure() {
     }
 }
 
-// Clear visual alerts
 function hideHint() {
     DOM.hintOverlay.classList.add("hidden");
     DOM.strikeBadge.textContent = `Strikes: 0/${AppState.maxStrikes}`;
@@ -144,7 +143,6 @@ function triggerLevelSuccess(game) {
     setTimeout(() => {
         DOM.celebrationScreen.classList.add("hidden");
 
-        // 🧼 Auto-clear terminal logs on level transition
         if (game.id === "command-prompt") {
             DOM.cliOutput.innerHTML = `
             <p>Microsoft Windows [Version 10.0.22631.3527]</p>
