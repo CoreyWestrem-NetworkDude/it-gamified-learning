@@ -26,7 +26,7 @@ const DOM = {
     celebrationScreen: document.getElementById("celebration-screen")
 };
 
-// 💾 LOCAL CACHE SYSTEM MECHANICS (Save and Load Functions)
+// 💾 LOCAL CACHE SYSTEM MECHANICS
 function saveProgressToCache() {
     const cachePayload = {
         module: AppState.currentGameModule,
@@ -42,7 +42,7 @@ function loadProgressFromCache() {
             const parsed = JSON.parse(cachedData);
             AppState.currentGameModule = parsed.module || "active-directory";
             AppState.currentLevelIndex = parsed.levelIndex || 0;
-            console.log(`[STATE LOADED]: Restored save state at ${AppState.currentGameModule} - Index ${AppState.currentLevelIndex}`);
+            console.log(`[STATE LOADED]: Save state restored.`);
         } catch (e) {
             console.error("Failed to recover historical telemetry profile state logs.", e);
         }
@@ -74,7 +74,6 @@ function switchWorkspaceView(targetModule, initializationMode = false) {
     }
 }
 
-// Active Directory Game Subsystem Router Loop
 function loadAdLevel() {
     if (AppState.currentLevelIndex >= activeDirectoryGame.levels.length) {
         AppState.currentLevelIndex = activeDirectoryGame.levels.length - 1;
@@ -87,7 +86,6 @@ function loadAdLevel() {
     `;
 }
 
-// Command Prompt Game Subsystem Router Loop
 function loadCliLevel() {
     if (AppState.currentLevelIndex >= commandPromptGame.levels.length) {
         AppState.currentLevelIndex = commandPromptGame.levels.length - 1;
@@ -97,7 +95,6 @@ function loadCliLevel() {
     DOM.cliTicketDesc.innerHTML = `<strong>Active Ticket:</strong> [Level ${levelData.level}/150] ${levelData.taskDescription}`;
 }
 
-// Telemetry and Hint Handler Mechanics
 function handleActionFailure() {
     AppState.strikeCount++;
     const game = AppState.currentGameModule === "active-directory" ? activeDirectoryGame : commandPromptGame;
@@ -123,7 +120,6 @@ function updateTelemetry(text) {
     DOM.streakMeter.textContent = `🎯 ${text}`;
 }
 
-// Victory Condition Execution Sequence Loop
 function triggerLevelSuccess(game) {
     hideHint();
     AppState.strikeCount = 0;
@@ -147,7 +143,6 @@ function triggerLevelSuccess(game) {
     setTimeout(() => {
         DOM.celebrationScreen.classList.add("hidden");
         
-        // 🧼 WIPE WINDOW CLEAN: Erase terminal scroll history right before loading the next level ticket
         if (game.id === "command-prompt") {
             DOM.cliOutput.innerHTML = `
                 <p>Microsoft Windows [Version 10.0.22631.3527]</p>
@@ -173,7 +168,7 @@ function triggerLevelSuccess(game) {
     }, completedLevelNum === 50 || completedLevelNum === 100 || completedLevelNum === 150 ? 4500 : 1500);
 }
 
-// Input Listener Event Bindings Setup Layout
+// Input Listener Event Bindings Setup
 DOM.btnLoadAd.addEventListener("click", () => switchWorkspaceView("active-directory"));
 DOM.btnLoadCli.addEventListener("click", () => switchWorkspaceView("command-prompt"));
 
@@ -231,8 +226,7 @@ DOM.cliInput.addEventListener("keydown", (e) => {
                 faultLine.style.color = "#e74c3c";
                 faultLine.textContent = `'${inputCmd}' is an unhandled instruction parameter. Ticket criteria validation failed.`;
                 DOM.cliOutput.appendChild(faultLine);
-                handleActionFailure();
-            }
+            handleActionFailure();
             DOM.cliOutput.scrollTop = DOM.cliOutput.scrollHeight;
         }
     }
