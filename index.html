@@ -7,77 +7,75 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Top System Menu Bar -->
-    <header class="windows-titlebar">
-        <div class="system-menu">
-            <span class="app-title">🖥️ IT Core Competency Simulator</span>
-            <button id="btn-load-ad" class="menu-tab active">Server Manager (Active Directory)</button>
-            <button id="btn-load-cli" class="menu-tab">Command Prompt (cmd.exe)</button>
+
+    <!-- Upper Windows Titlebar and Active Navigation Layout -->
+    <div class="windows-titlebar">
+        <div class="nav-cluster">
+            <button class="menu-tab active" id="btn-load-ad">Server Manager (Active Directory)</button>
+            <button class="menu-tab" id="btn-load-cli">Command Prompt (cmd.exe)</button>
         </div>
         <div class="score-telemetry">
-            <span id="streak-meter">🎯 Progress: Level 1</span>
+            <span id="streak-meter">🎯 Progress: Initializing...</span>
             <span id="strike-badge" class="strike-clear">Strikes: 0/3</span>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Dynamic Desktop Work space -->
-    <main class="desktop-environment">
-        
-        <!-- MODULE 1: WINDOWS SERVER MANAGER / AD HARDWARE PLATFORM -->
-        <section id="view-active-directory" class="simulator-window active">
-            <!-- Top Menu Layout -->
-            <div class="sm-navbar">
-                <span class="sm-brand">Server Manager</span>
-                <div class="sm-nav-actions">
-                    <button id="sm-tools-trigger">Tools ▾</button>
+    <!-- Main Desktop Work Area Arena Wrapper -->
+    <div class="desktop-environment">
+        <div class="simulator-window">
+            
+            <!-- VIEW A: ACTIVE DIRECTORY COMPONENT PANEL -->
+            <div id="view-active-directory" class="sm-workspace">
+                <div class="sm-navbar">
+                    <div class="sm-brand">Server Manager</div>
+                    <button id="sm-tools-trigger">Tools ▼</button>
                     <div id="sm-tools-dropdown" class="hidden">
                         <button id="aduc-trigger">Active Directory Users and Computers</button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Main Work Interface Windows -->
-            <div class="sm-workspace">
-                <!-- Inner Active Window Display Logic -->
-                <div id="ad-wizard-view" class="window-pane">
-                    <h3>Dashboard Tasks</h3>
-                    <div class="alert-banner hidden" id="dc-promo-banner">
-                        ⚠️ Post-deployment configuration required for Active Directory Domain Services. 
-                        <a href="#" id="lnk-promote-dc">Promote this server to a domain controller.</a>
-                    </div>
-                    <p class="placeholder-text">Select an administrative task from the menu structure layout above to begin.</p>
+                <div class="alert-banner">
+                    <strong>System Telemetry Warning:</strong> Active Directory replication logs are currently holding stale state parameters.
+                </div>
+                <div id="ad-wizard-view" class="sm-body-content">
+                    <!-- Loaded dynamically via app.js -->
                 </div>
             </div>
-        </section>
 
-        <!-- MODULE 2: COMMAND PROMPT SUBSYSTEM INTERFACE -->
-        <section id="view-command-prompt" class="simulator-window hidden">
-            <div class="cli-wrapper">
-                <div class="cli-header">Command Prompt</div>
+            <!-- VIEW B: COMMAND PROMPT COMPONENT PANEL -->
+            <div id="view-command-prompt" class="cli-wrapper hidden">
+                <!-- Isolated Ticket Box: Completely safe from terminal clears -->
+                <div class="cli-ticket-zone">
+                    <p id="cli-ticket-desc"><strong>Active Ticket:</strong> [Level 1/150] Loading objective configurations...</p>
+                </div>
+
+                <!-- Scrolling Log Workspace Window Frame -->
                 <div id="cli-output" class="cli-body">
                     <p>Microsoft Windows [Version 10.0.22631.3527]</p>
                     <p>(c) Microsoft Corporation. All rights reserved.</p>
                     <br>
-                    <p id="cli-ticket-desc"><strong>Active Ticket:</strong> Ingress connectivity fault detected. Triage interface routes...</p>
-                    <br>
                 </div>
+
+                <!-- Fixed Command Input Typing Line Row -->
                 <div class="cli-input-line">
-                    <span>C:\Users\Administrator></span>
+                    <span>C:\Users\Administrator&gt;</span>
                     <input type="text" id="cli-input" autofocus autocomplete="off" spellcheck="false">
                 </div>
             </div>
-        </section>
 
-        <!-- REAL-TIME CONTEXTUAL HINT NOTIFICATION CARD -->
-        <div id="hint-overlay" class="hint-card hidden">
-            <div class="hint-header">💡 Assistant Telemetry Hint</div>
-            <div id="hint-text" class="hint-body"></div>
         </div>
 
-        <!-- PARTY CELEBRATION EFFECT CONTAINER OVERLAY -->
-        <div id="celebration-screen" class="party-container hidden">🎉 SUCCESS! LEVEL ACHIEVED 🎉</div>
-    </main>
+        <!-- Popover Elements (Hints and Celebrations) -->
+        <div id="hint-overlay" class="hint-card hidden">
+            <div class="hint-header">💡 SYSTEM ASSISTANCE HINT</div>
+            <div id="hint-text">Try reviewing core infrastructure command documentation files.</div>
+        </div>
 
+        <div id="celebration-screen" class="party-container hidden">
+            🎉 SUCCESS! LEVEL ACHIEVED 🎉
+        </div>
+    </div>
+
+    <!-- Core Game Scripts Injection Sequence -->
     <script src="games/active-directory.js"></script>
     <script src="games/command-prompt.js"></script>
     <script src="app.js"></script>
